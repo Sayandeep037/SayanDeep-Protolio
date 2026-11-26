@@ -119,26 +119,6 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 />
               </motion.svg>
 
-              {/* Inner counter-rotating arc */}
-              <motion.svg
-                aria-hidden="true"
-                viewBox="0 0 220 220"
-                animate={{ rotate: -360 }}
-                transition={{ duration: 16, repeat: Infinity, ease: 'linear' }}
-                className="pointer-events-none absolute -inset-2 h-[calc(100%+0.25rem)] w-[calc(100%+1rem)] opacity-45"
-              >
-                <circle
-                  cx="110"
-                  cy="110"
-                  r="88"
-                  fill="none"
-                  stroke="#52e896"
-                  strokeWidth="1.2"
-                  strokeDasharray="36 140"
-                  strokeLinecap="round"
-                />
-              </motion.svg>
-
               <motion.div
                 whileHover={{ y: -5, scale: 1.03 }}
                 transition={{ type: 'spring', stiffness: 280, damping: 20 }}
@@ -231,8 +211,6 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
             {[
               ...MARQUEE_SKILLS,
               ...MARQUEE_SKILLS,
-              ...MARQUEE_SKILLS,
-              ...MARQUEE_SKILLS,
             ].map((skill, idx) => (
               <div
                 key={`${skill}-${idx}`}
@@ -286,15 +264,6 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                   }}
                   className="relative"
                 >
-                  {/* Pulsing emerald beacon on first/current role */}
-                  {idx === 0 && (
-                    <motion.span
-                      aria-hidden="true"
-                      animate={{ scale: [1, 2.2, 1], opacity: [0.65, 0, 0.65] }}
-                      transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
-                      className="absolute -left-5 top-1.5 h-2.5 w-2.5 rounded-full bg-[#36d67e]"
-                    />
-                  )}
                   <motion.span
                     initial={{ scale: 0 }}
                     whileInView={{ scale: 1 }}
@@ -368,11 +337,7 @@ export function AboutPage({ onNavigate }: AboutPageProps) {
                 className="mt-2 rounded-xl border border-[#234734] bg-[#0b1b13] p-4 transition-colors"
               >
                 <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#52e896] mb-1">
-                  <motion.span
-                    animate={{ opacity: [0.5, 1, 0.5] }}
-                    transition={{ duration: 2, repeat: Infinity }}
-                    className="inline-block h-1.5 w-1.5 rounded-full bg-[#36d67e]"
-                  />
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-[#36d67e]" />
                   Hackathon Activity
                 </div>
                 <p className="text-sm text-white font-medium">

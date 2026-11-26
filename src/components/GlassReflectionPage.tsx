@@ -39,45 +39,9 @@ export function GlassReflectionPage({
       style={{ transformPerspective: 1400 }}
       className="relative mx-auto w-full max-w-5xl scroll-mt-24"
     >
-      {/* Outward-radiating smoked-glass reflection wave burst on view */}
-      <motion.div
+      <div
         aria-hidden="true"
-        animate={
-          inView
-            ? {
-                opacity: [0, 0.55, 0],
-                scale: [0.95, 1.045, 1.07],
-              }
-            : { opacity: 0, scale: 0.95 }
-        }
-        transition={{
-          duration: 3.4,
-          repeat: Infinity,
-          repeatDelay: 2.4,
-          delay: index * 0.55,
-          ease: [0.16, 1, 0.3, 1],
-        }}
-        className="pointer-events-none absolute -inset-2 -z-10 rounded-[30px] border border-[#52e896]/35 shadow-[0_0_45px_rgba(82,232,150,0.2)]"
-      />
-
-      {/* Outward-radiating smoked-glass reflection aura behind/around each page */}
-      <motion.div
-        aria-hidden="true"
-        animate={
-          inView
-            ? {
-                opacity: [0.35, 0.72, 0.45],
-                scale: [0.98, 1.015, 0.99],
-              }
-            : { opacity: 0.15, scale: 0.98 }
-        }
-        transition={{
-          duration: 5.2,
-          repeat: Infinity,
-          delay: index * 0.45,
-          ease: 'easeInOut',
-        }}
-        className="pointer-events-none absolute -inset-3 -z-10 rounded-[28px] bg-[radial-gradient(ellipse_at_50%_0%,rgba(82,232,150,0.18),rgba(54,214,126,0.06)_45%,transparent_75%)]"
+        className="pointer-events-none absolute -inset-3 -z-10 rounded-[28px] border border-[#52e896]/15 bg-[radial-gradient(ellipse_at_50%_0%,rgba(82,232,150,0.12),rgba(54,214,126,0.04)_45%,transparent_75%)]"
       />
 
       {/* Outward top-edge specular prism rim rays */}
@@ -85,19 +49,7 @@ export function GlassReflectionPage({
         aria-hidden="true"
         className="pointer-events-none absolute -top-px inset-x-8 z-20 h-px overflow-visible"
       >
-        <motion.span
-          animate={{
-            scaleX: inView ? [0.25, 1, 0.45] : 0.2,
-            opacity: inView ? [0.35, 0.95, 0.45] : 0.2,
-          }}
-          transition={{
-            duration: 4.2,
-            repeat: Infinity,
-            delay: index * 0.5,
-            ease: 'easeInOut',
-          }}
-          className="block h-full w-full bg-gradient-to-r from-transparent via-white/70 to-transparent shadow-[0_0_22px_3px_rgba(82,232,150,0.55)]"
-        />
+        <span className="block h-full w-full bg-gradient-to-r from-transparent via-white/45 to-transparent shadow-[0_0_16px_2px_rgba(82,232,150,0.3)]" />
       </div>
 
       {/* Sequential Page Divider Header (Next-to-Next marker) */}
@@ -117,21 +69,13 @@ export function GlassReflectionPage({
 
       {/* Smoked-Glass Specular Frame wrapping page content */}
       <div className="relative overflow-hidden rounded-3xl border border-white/12 bg-[#050d09]/45 p-2 sm:p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_28px_80px_rgba(0,0,0,0.55)]">
-        {/* Diagonal glass reflection sweep coming out across the page */}
+        {/* One transform-based glass sweep plays when the section enters view. */}
         <motion.div
           aria-hidden="true"
-          animate={
-            inView
-              ? {
-                  left: ['-45%', '145%'],
-                }
-              : { left: '-45%' }
-          }
+          initial={{ x: '-45%' }}
+          animate={inView ? { x: '145%' } : { x: '-45%' }}
           transition={{
             duration: 2.3,
-            repeat: Infinity,
-            repeatDelay: 4.5,
-            delay: index * 0.9,
             ease: [0.3, 0, 0.2, 1],
           }}
           className="pointer-events-none absolute inset-y-[-15%] z-20 flex w-44 -skew-x-[22deg]"
@@ -142,36 +86,14 @@ export function GlassReflectionPage({
         </motion.div>
 
         {/* Corner specular glass ray glints radiating outward */}
-        <motion.span
+        <span
           aria-hidden="true"
-          animate={{
-            opacity: inView ? [0.18, 0.55, 0.18] : 0.1,
-            x: [0, 8, 0],
-            y: [0, -6, 0],
-          }}
-          transition={{
-            duration: 4.8,
-            repeat: Infinity,
-            delay: index * 0.6,
-            ease: 'easeInOut',
-          }}
-          className="pointer-events-none absolute -top-12 -right-10 z-20 h-44 w-44 rotate-12 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.14)_0%,rgba(82,232,150,0.12)_35%,transparent_72%)]"
+          className="pointer-events-none absolute -top-12 -right-10 z-20 h-44 w-44 rotate-12 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.1)_0%,rgba(82,232,150,0.08)_35%,transparent_72%)]"
         />
 
-        <motion.span
+        <span
           aria-hidden="true"
-          animate={{
-            opacity: inView ? [0.12, 0.42, 0.12] : 0.08,
-            x: [0, -6, 0],
-            y: [0, 6, 0],
-          }}
-          transition={{
-            duration: 5.4,
-            repeat: Infinity,
-            delay: index * 0.7 + 1,
-            ease: 'easeInOut',
-          }}
-          className="pointer-events-none absolute -bottom-14 -left-10 z-20 h-44 w-44 -rotate-12 rounded-full bg-[radial-gradient(circle,rgba(82,232,150,0.16)_0%,rgba(54,214,126,0.08)_40%,transparent_72%)]"
+          className="pointer-events-none absolute -bottom-14 -left-10 z-20 h-44 w-44 -rotate-12 rounded-full bg-[radial-gradient(circle,rgba(82,232,150,0.09)_0%,rgba(54,214,126,0.04)_40%,transparent_72%)]"
         />
 
         <div className="relative z-10">{children}</div>

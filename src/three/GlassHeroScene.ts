@@ -136,6 +136,7 @@ export class GlassHeroSceneController {
   private pointerX = 0; // -1..1
   private pointerY = 0; // -1..1
   private pointerInside = false;
+  private pointerMoved = false;
   private hoveredPieceId: ShardPiece['id'] | null = null;
   private backSliverHovered = false;
   private backSliverTipX = 0;
@@ -167,7 +168,7 @@ export class GlassHeroSceneController {
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.08;
     this.renderer.setPixelRatio(
-      this.isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 2)
+      this.isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 1.5)
     );
     this.renderer.setSize(this.viewW, this.viewH);
     this.renderer.setClearColor(0x030806, 0);
@@ -665,6 +666,7 @@ export class GlassHeroSceneController {
     this.pointerInside = true;
     this.pointerX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
     this.pointerY = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+    this.pointerMoved = true;
 
     // Update cursor world position on z = 0 plane for glow shader
     _ndc.set(this.pointerX, this.pointerY);
@@ -703,7 +705,7 @@ export class GlassHeroSceneController {
     this.viewH = this.container.clientHeight || window.innerHeight;
 
     this.renderer.setPixelRatio(
-      this.isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 2)
+      this.isSoftwareGl ? 1 : Math.min(window.devicePixelRatio || 1, 1.5)
     );
     this.renderer.setSize(this.viewW, this.viewH);
     this.updateCameraDistance();
@@ -834,12 +836,13 @@ export class GlassHeroSceneController {
       dt
     );
 
-    // 3. Rebuild live cut pattern at ~45x/sec while idle
-    if (this.phase === 'idle') {
+    // Rebuild costly shard geometry only while the pointer is changing its layout.
+    if (this.phase === 'idle' && this.pointerMoved) {
       this.rebuildAccumulator += dt;
-      if (this.rebuildAccumulator >= 1 / 45) {
+      if (this.rebuildAccumulator >= 1 / 30) {
         this.rebuildAccumulator = 0;
         this.rebuildLiveCutGeometry(elapsed);
+        this.pointerMoved = false;
       }
     }
 

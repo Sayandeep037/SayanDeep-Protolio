@@ -23,14 +23,10 @@ export function PortfolioPage({ onNavigate }: PortfolioPageProps) {
       >
         {/* Header */}
         <motion.section
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 5.6, repeat: Infinity, ease: 'easeInOut' }}
           className="relative overflow-hidden rounded-2xl border border-[#1f3b2c] bg-[#07110c]/92 p-7 sm:p-10 shadow-[0_18px_45px_rgba(0,0,0,0.45)]"
         >
-          <motion.span
+          <span
             aria-hidden="true"
-            animate={{ y: [0, -10, 0], x: [0, 8, 0], opacity: [0.16, 0.34, 0.16] }}
-            transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut' }}
             className="pointer-events-none -top-12 right-12 absolute h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(82,232,150,0.22),transparent_70%)]"
           />
 
@@ -73,16 +69,6 @@ export function PortfolioPage({ onNavigate }: PortfolioPageProps) {
               transition={{ duration: 0.5, delay: index * 0.08, ease: EASE_OUT_EXPO }}
             >
               <motion.article
-                animate={{
-                  y: [0, -7, 0],
-                  rotateX: [0, 0.9, 0],
-                }}
-                transition={{
-                  duration: 4.8 + index * 0.55,
-                  repeat: Infinity,
-                  delay: index * 0.45,
-                  ease: 'easeInOut',
-                }}
                 whileHover={{
                   y: -10,
                   scale: 1.01,
@@ -91,19 +77,8 @@ export function PortfolioPage({ onNavigate }: PortfolioPageProps) {
                 style={{ transformPerspective: 1200 }}
                 className="relative overflow-hidden rounded-2xl border border-[#1f3b2c] bg-[#07110c]/92 p-7 sm:p-9 transition-colors shadow-[0_20px_50px_rgba(0,0,0,0.45)]"
               >
-                <motion.span
+                <span
                   aria-hidden="true"
-                  animate={{
-                    y: [0, 10, 0],
-                    x: [0, -10, 0],
-                    opacity: [0.12, 0.28, 0.12],
-                  }}
-                  transition={{
-                    duration: 5.5 + index * 0.5,
-                    repeat: Infinity,
-                    delay: index * 0.4,
-                    ease: 'easeInOut',
-                  }}
                   className="pointer-events-none absolute -bottom-12 -right-8 h-44 w-44 rounded-full bg-[radial-gradient(circle,rgba(54,214,126,0.18),transparent_72%)]"
                 />
 
@@ -140,23 +115,14 @@ export function PortfolioPage({ onNavigate }: PortfolioPageProps) {
                 </p>
 
                 <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-white/12">
-                  {project.highlights.map((highlight, hIdx) => (
+                  {project.highlights.map((highlight) => (
                     <div
                       key={highlight}
                       className="flex items-start gap-2.5 text-sm text-white/90"
                     >
-                      <motion.span
-                        animate={{ y: [0, -2.5, 0] }}
-                        transition={{
-                          duration: 2.8,
-                          repeat: Infinity,
-                          delay: hIdx * 0.25 + index * 0.2,
-                          ease: 'easeInOut',
-                        }}
-                        className="inline-flex shrink-0 mt-0.5"
-                      >
+                      <span className="inline-flex shrink-0 mt-0.5">
                         <CheckCircle2 className="w-4 h-4 text-[#52e896]" />
-                      </motion.span>
+                      </span>
                       <span>{highlight}</span>
                     </div>
                   ))}
@@ -192,8 +158,6 @@ export function PortfolioPage({ onNavigate }: PortfolioPageProps) {
 
         {/* Bottom CTA */}
         <motion.section
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 5.2, repeat: Infinity, delay: 0.35, ease: 'easeInOut' }}
           className="rounded-2xl border border-[#1f3b2c] bg-[#07110c]/92 p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-[0_18px_45px_rgba(0,0,0,0.45)]"
         >
           <div>

@@ -32,65 +32,10 @@ export function ServicesPage() {
           transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
           className="relative overflow-hidden rounded-2xl border border-[#1f3b2c] bg-[#07110c]/92 p-7 sm:p-10 shadow-[0_24px_60px_rgba(0,0,0,0.4)]"
         >
-          {/* Green laser perimeter, diagonal beam & scanline effects */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl"
-          >
-            {/* Top edge racing green laser */}
-            <motion.span
-              animate={{ left: ['-20%', '115%'] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: 'linear' }}
-              className="absolute top-0 h-[2px] w-44 bg-gradient-to-r from-transparent via-[#6bffb0] to-transparent shadow-[0_0_16px_2px_rgba(54,214,126,0.95)]"
-            />
-
-            {/* Bottom edge counter-racing green laser */}
-            <motion.span
-              animate={{ left: ['115%', '-20%'] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: 'linear' }}
-              className="absolute bottom-0 h-[2px] w-44 bg-gradient-to-r from-transparent via-[#6bffb0] to-transparent shadow-[0_0_16px_2px_rgba(54,214,126,0.95)]"
-            />
-
-            {/* Left & right vertical edge lasers */}
-            <motion.span
-              animate={{ top: ['115%', '-35%'] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
-              className="absolute left-0 w-[2px] h-28 bg-gradient-to-b from-transparent via-[#6bffb0] to-transparent shadow-[0_0_14px_2px_rgba(54,214,126,0.9)]"
-            />
-            <motion.span
-              animate={{ top: ['-35%', '115%'] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: 'linear' }}
-              className="absolute right-0 w-[2px] h-28 bg-gradient-to-b from-transparent via-[#6bffb0] to-transparent shadow-[0_0_14px_2px_rgba(54,214,126,0.9)]"
-            />
-
-            {/* Diagonal sweeping green laser beam with emerald trail */}
-            <motion.div
-              animate={{ left: ['-20%', '120%'] }}
-              transition={{
-                duration: 3.6,
-                repeat: Infinity,
-                repeatDelay: 0.9,
-                ease: [0.4, 0, 0.2, 1],
-              }}
-              className="absolute inset-y-[-20%] w-28 -skew-x-12 bg-gradient-to-r from-transparent via-[#36d67e]/20 to-transparent"
-            >
-              <span className="absolute right-0 inset-y-0 w-[2px] bg-gradient-to-b from-transparent via-[#7effb8] to-transparent shadow-[0_0_24px_4px_rgba(82,232,150,0.9)]" />
-            </motion.div>
-
-            {/* Horizontal laser scanline moving vertically */}
-            <motion.span
-              animate={{
-                top: ['-4%', '104%'],
-                opacity: [0, 0.95, 0.95, 0],
-              }}
-              transition={{
-                duration: 4.2,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-              className="absolute inset-x-0 h-[1.5px] bg-gradient-to-r from-transparent via-[#52e896]/85 to-transparent shadow-[0_0_18px_2px_rgba(54,214,126,0.65)]"
-            />
-          </div>
+            className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#52e896]/40 to-transparent"
+          />
 
           <div className="relative z-10">
             <motion.div
@@ -99,11 +44,7 @@ export function ServicesPage() {
               transition={{ duration: 0.45, delay: 0.08, ease: EASE_OUT_EXPO }}
               className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#52e896] mb-3"
             >
-              <motion.span
-                animate={{ scale: [1, 1.45, 1], opacity: [0.65, 1, 0.65] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                className="h-2 w-2 rounded-full bg-[#36d67e]"
-              />
+              <span className="h-2 w-2 rounded-full bg-[#36d67e]" />
               Services &amp; Capabilities
             </motion.div>
 
@@ -138,7 +79,6 @@ export function ServicesPage() {
             return (
               <motion.article
                 key={service.title}
-                onMouseEnter={() => triggerFlip(idx)}
                 onClick={() => triggerFlip(idx)}
                 initial={{ opacity: 0, x: entryX, y: entryY, scale: 0.96 }}
                 whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
@@ -179,24 +119,8 @@ export function ServicesPage() {
                 <div className="relative z-10">
                   <div className="flex items-center justify-between mb-5">
                     <motion.div
-                      animate={
-                        isActive
-                          ? idx === 0
-                            ? { y: [0, -3, 0] }
-                            : idx === 1
-                              ? { rotateY: [0, 180, 360] }
-                              : { rotate: [0, 90, 180, 270, 360] }
-                          : { y: 0, rotate: 0, rotateY: 0 }
-                      }
-                      transition={
-                        isActive
-                          ? {
-                              duration: idx === 2 ? 7 : 3,
-                              repeat: Infinity,
-                              ease: idx === 2 ? 'linear' : 'easeInOut',
-                            }
-                          : { duration: 0.3 }
-                      }
+                      animate={isActive ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+                      transition={{ duration: 0.3, ease: EASE_OUT_EXPO }}
                       className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-colors ${
                         isActive
                           ? 'bg-[#123021] border-[#36d67e]/70 text-[#52e896]'
@@ -238,75 +162,16 @@ export function ServicesPage() {
           transition={{ duration: 0.5, ease: EASE_OUT_EXPO }}
           className="relative overflow-hidden rounded-2xl border border-[#1f3b2c] bg-[#07110c]/92 p-7"
         >
-          {/* Animated Emerald Wave Backdrop */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-32 overflow-hidden rounded-b-2xl"
-          >
-            {/* Primary flowing emerald wave */}
-            <motion.div
-              animate={{ x: ['0%', '-50%'] }}
-              transition={{ duration: 9, repeat: Infinity, ease: 'linear' }}
-              className="absolute bottom-0 left-0 flex w-[200%] h-24"
-            >
-              {[0, 1].map((copy) => (
-                <svg
-                  key={`wave-a-${copy}`}
-                  viewBox="0 0 1200 120"
-                  preserveAspectRatio="none"
-                  className="h-full w-1/2"
-                >
-                  <path
-                    d="M0,64 C200,110 400,18 600,64 C800,110 1000,18 1200,64 L1200,120 L0,120 Z"
-                    fill="rgba(54, 214, 126, 0.12)"
-                  />
-                  <path
-                    d="M0,64 C200,110 400,18 600,64 C800,110 1000,18 1200,64"
-                    fill="none"
-                    stroke="rgba(82, 232, 150, 0.45)"
-                    strokeWidth="2"
-                  />
-                </svg>
-              ))}
-            </motion.div>
-
-            {/* Secondary counter-phase emerald wave */}
-            <motion.div
-              animate={{ x: ['-50%', '0%'] }}
-              transition={{ duration: 13, repeat: Infinity, ease: 'linear' }}
-              className="absolute bottom-0 left-0 flex w-[200%] h-20"
-            >
-              {[0, 1].map((copy) => (
-                <svg
-                  key={`wave-b-${copy}`}
-                  viewBox="0 0 1200 120"
-                  preserveAspectRatio="none"
-                  className="h-full w-1/2"
-                >
-                  <path
-                    d="M0,56 C240,12 480,104 720,56 C960,12 1080,88 1200,56 L1200,120 L0,120 Z"
-                    fill="rgba(54, 214, 126, 0.08)"
-                  />
-                  <path
-                    d="M0,56 C240,12 480,104 720,56 C960,12 1080,88 1200,56"
-                    fill="none"
-                    stroke="rgba(54, 214, 126, 0.35)"
-                    strokeWidth="1.5"
-                  />
-                </svg>
-              ))}
-            </motion.div>
-          </div>
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-24 rounded-b-2xl bg-gradient-to-t from-[#123322]/35 to-transparent"
+          />
 
           <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div className="flex items-center gap-2.5 text-[#52e896] text-xs font-semibold uppercase tracking-[0.18em]">
-              <motion.span
-                animate={{ scale: [1, 1.18, 1] }}
-                transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-                className="inline-flex"
-              >
+              <span className="inline-flex">
                 <Code2 className="w-4 h-4" />
-              </motion.span>
+              </span>
               Technical Stack
             </div>
           </div>
@@ -332,20 +197,6 @@ export function ServicesPage() {
                   {group.items.map((item, itemIdx) => (
                     <motion.span
                       key={item}
-                      animate={{
-                        y: [0, -5, 0],
-                        borderColor: [
-                          'rgba(35, 71, 52, 1)',
-                          'rgba(82, 232, 150, 0.72)',
-                          'rgba(35, 71, 52, 1)',
-                        ],
-                      }}
-                      transition={{
-                        duration: 2.6,
-                        repeat: Infinity,
-                        delay: itemIdx * 0.22,
-                        ease: 'easeInOut',
-                      }}
                       whileHover={{
                         y: -8,
                         scale: 1.07,

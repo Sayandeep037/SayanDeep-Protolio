@@ -28,7 +28,6 @@ const WEB3FORMS_ACCESS_KEY = '6cf1d74e-5a39-4b73-91a8-b8b4dafb5324';
 export function ContactPage() {
   const infoCardRef = useRef<HTMLElement | null>(null);
   const formCardRef = useRef<HTMLElement | null>(null);
-
   const [name, setName] = useState('');
   const [senderEmail, setSenderEmail] = useState('');
   const [subject, setSubject] = useState('');
@@ -158,14 +157,10 @@ export function ContactPage() {
       >
       {/* Header */}
       <motion.section
-        animate={{ y: [0, -5, 0] }}
-        transition={{ duration: 5.8, repeat: Infinity, ease: 'easeInOut' }}
         className="relative overflow-hidden rounded-2xl border border-[#1f3b2c] bg-[#07110c]/92 p-7 sm:p-10 shadow-[0_18px_45px_rgba(0,0,0,0.45)]"
       >
-        <motion.span
+        <span
           aria-hidden="true"
-          animate={{ y: [0, -10, 0], x: [0, 8, 0], opacity: [0.15, 0.32, 0.15] }}
-          transition={{ duration: 6.2, repeat: Infinity, ease: 'easeInOut' }}
           className="pointer-events-none absolute -top-12 right-12 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(82,232,150,0.22),transparent_70%)]"
         />
         <p className="relative z-10 text-xs font-semibold uppercase tracking-[0.2em] text-[#52e896] mb-3">
@@ -182,8 +177,6 @@ export function ContactPage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
         {/* Direct Channels */}
         <motion.div
-          animate={{ y: [0, -7, 0] }}
-          transition={{ duration: 5.2, repeat: Infinity, delay: 0.25, ease: 'easeInOut' }}
           className="lg:col-span-2"
         >
           <motion.section
@@ -218,11 +211,7 @@ export function ContactPage() {
           >
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#52e896] mb-2">
               <span className="relative flex h-2 w-2">
-                <motion.span
-                  animate={{ scale: [1, 2.2, 1], opacity: [0.75, 0, 0.75] }}
-                  transition={{ duration: 2.2, repeat: Infinity, ease: 'easeOut' }}
-                  className="absolute inset-0 rounded-full bg-[#36d67e]"
-                />
+                <span className="absolute inset-0 rounded-full bg-[#36d67e]/45" />
                 <span className="relative h-2 w-2 rounded-full bg-[#36d67e]" />
               </span>
               Email
@@ -232,13 +221,9 @@ export function ContactPage() {
                 href={`mailto:${PORTFOLIO_IDENTITY.email}`}
                 className="inline-flex items-center gap-2 text-sm sm:text-base font-semibold text-white hover:text-[#52e896] transition-colors break-all"
               >
-                <motion.span
-                  animate={{ y: [0, -2, 0] }}
-                  transition={{ duration: 2.6, repeat: Infinity, ease: 'easeInOut' }}
-                  className="inline-flex"
-                >
+                <span className="inline-flex">
                   <Mail className="w-4 h-4 text-[#52e896] shrink-0" />
-                </motion.span>
+                </span>
                 {PORTFOLIO_IDENTITY.email}
               </a>
               <motion.button
@@ -273,13 +258,9 @@ export function ContactPage() {
               href={`tel:${PORTFOLIO_IDENTITY.phone.replace(/\s+/g, '')}`}
               className="inline-flex items-center gap-2 text-sm sm:text-base font-semibold text-white hover:text-[#52e896] transition-colors"
             >
-              <motion.span
-                animate={{ rotate: [0, -8, 8, 0] }}
-                transition={{ duration: 3.4, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
-                className="inline-flex"
-              >
+              <span className="inline-flex">
                 <Phone className="w-4 h-4 text-[#52e896] shrink-0" />
-              </motion.span>
+              </span>
               {PORTFOLIO_IDENTITY.phone}
             </a>
           </motion.div>
@@ -296,13 +277,9 @@ export function ContactPage() {
               Location
             </div>
             <div className="inline-flex items-center gap-2 text-sm sm:text-base font-medium text-[#dce8e1]">
-              <motion.span
-                animate={{ y: [0, -3, 0] }}
-                transition={{ duration: 2.8, repeat: Infinity, ease: 'easeInOut' }}
-                className="inline-flex"
-              >
+              <span className="inline-flex">
                 <MapPin className="w-4 h-4 text-[#52e896] shrink-0" />
-              </motion.span>
+              </span>
               Bangalore, Karnataka
             </div>
           </motion.div>
@@ -347,12 +324,6 @@ export function ContactPage() {
                 whileTap={{ scale: 0.96 }}
                 className="relative overflow-hidden inline-flex items-center gap-1.5 rounded-lg bg-[#36d67e] px-3.5 py-2 text-sm font-semibold text-[#031109] hover:bg-[#52e896] transition-colors"
               >
-                <motion.span
-                  aria-hidden="true"
-                  animate={{ left: ['-45%', '140%'] }}
-                  transition={{ duration: 2.6, repeat: Infinity, repeatDelay: 2.2, ease: 'easeInOut' }}
-                  className="pointer-events-none absolute inset-y-0 w-10 -skew-x-12 bg-white/30"
-                />
                 <Download className="w-4 h-4 relative z-10" />
                 <span className="relative z-10">Resume PDF</span>
               </motion.a>
@@ -363,12 +334,6 @@ export function ContactPage() {
 
         {/* Direct Message Form */}
         <motion.div
-          animate={focusedField ? { y: 0 } : { y: [0, -7, 0] }}
-          transition={
-            focusedField
-              ? { duration: 0.25, ease: EASE_OUT_EXPO }
-              : { duration: 5.8, repeat: Infinity, delay: 0.7, ease: 'easeInOut' }
-          }
           className="lg:col-span-3"
         >
           <motion.section
@@ -394,10 +359,8 @@ export function ContactPage() {
           />
 
           {/* Top-edge gliding emerald beam */}
-          <motion.span
+          <span
             aria-hidden="true"
-            animate={{ left: ['-25%', '120%'] }}
-            transition={{ duration: 3.8, repeat: Infinity, ease: 'linear' }}
             className="pointer-events-none absolute top-0 h-[2px] w-40 bg-gradient-to-r from-transparent via-[#52e896] to-transparent shadow-[0_0_14px_rgba(54,214,126,0.85)]"
           />
 
@@ -412,11 +375,7 @@ export function ContactPage() {
               <h2 className="text-xl font-semibold text-white">
                 Send a Message
               </h2>
-              <motion.span
-                animate={{ scale: [1, 1.35, 1], opacity: [0.55, 1, 0.55] }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
-                className="h-2 w-2 rounded-full bg-[#36d67e]"
-              />
+              <span className="h-2 w-2 rounded-full bg-[#36d67e]" />
             </div>
             <p className="text-sm text-[#dce8e1] mb-6">
               Submit your message below to send it directly to {PORTFOLIO_IDENTITY.email}.
@@ -570,12 +529,6 @@ export function ContactPage() {
                 whileTap={{ scale: 0.97 }}
                 className="relative overflow-hidden group inline-flex items-center gap-2 rounded-lg bg-[#36d67e] px-5 py-2.5 text-sm font-semibold text-[#031109] hover:bg-[#52e896] disabled:opacity-60 disabled:cursor-not-allowed transition-colors cursor-pointer"
               >
-                <motion.span
-                  aria-hidden="true"
-                  animate={{ left: ['-45%', '140%'] }}
-                  transition={{ duration: 2.8, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }}
-                  className="pointer-events-none absolute inset-y-0 w-10 -skew-x-12 bg-white/30"
-                />
                 {submitStatus === 'submitting' ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin relative z-10" />
