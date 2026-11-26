@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sayandeep037.github.io/SayanDeep-Protolio/sitemap.xml
