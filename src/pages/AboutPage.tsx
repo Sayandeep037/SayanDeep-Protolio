@@ -22,21 +22,13 @@ import {
 } from '../data/portfolioData';
 
 interface AboutPageProps {
-  portraitDataUrl: string | null;
-  onOpenPhotoPicker: () => void;
-  onRemovePortrait: () => void;
   onNavigate: (section: DetailSection) => void;
 }
 
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
 const MARQUEE_SKILLS = ['HTML', 'CSS', 'JavaScript', 'Java', 'SQL', 'Python'];
 
-export function AboutPage({
-  portraitDataUrl,
-  onOpenPhotoPicker,
-  onRemovePortrait,
-  onNavigate,
-}: AboutPageProps) {
+export function AboutPage({ onNavigate }: AboutPageProps) {
   const heroCardRef = useRef<HTMLElement | null>(null);
 
   const pointerX = useMotionValue(0);
@@ -147,67 +139,17 @@ export function AboutPage({
                 />
               </motion.svg>
 
-              <motion.button
-                type="button"
-                onClick={onOpenPhotoPicker}
+              <motion.div
                 whileHover={{ y: -5, scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
                 transition={{ type: 'spring', stiffness: 280, damping: 20 }}
-                className={`group relative w-40 h-48 overflow-hidden cursor-pointer flex items-center justify-center ${
-                  portraitDataUrl
-                    ? 'bg-transparent'
-                    : 'rounded-2xl border border-dashed border-[#36d67e]/40 hover:border-[#36d67e] bg-[#0a1a12]'
-                }`}
+                className="group relative w-40 h-48 overflow-hidden"
               >
-                {portraitDataUrl ? (
-                  <>
-                    <img
-                      src={portraitDataUrl}
-                      alt={PORTFOLIO_IDENTITY.fullName}
-                      className="w-full h-full object-cover object-[50%_28%] opacity-90 contrast-110 brightness-90 saturate-75 transition-transform duration-500 group-hover:scale-105"
-                      style={{
-                        WebkitMaskImage:
-                          'radial-gradient(ellipse 74% 78% at 50% 46%, #000 45%, transparent 98%)',
-                        maskImage:
-                          'radial-gradient(ellipse 74% 78% at 50% 46%, #000 45%, transparent 98%)',
-                      }}
-                    />
-                    <span
-                      className="pointer-events-none absolute inset-0"
-                      style={{
-                        background:
-                          'radial-gradient(ellipse 74% 78% at 50% 46%, rgba(18,64,42,0.22) 0%, rgba(7,17,12,0.78) 95%)',
-                      }}
-                    />
-                    <span className="absolute bottom-3 px-3 py-1 rounded-full bg-[#07160e]/90 border border-[#36d67e]/45 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-medium text-[#52e896]">
-                      Change Photo
-                    </span>
-                  </>
-                ) : (
-                  <span className="text-xs font-semibold tracking-wider text-white/75 group-hover:text-[#52e896] transition-colors px-3 text-center">
-                    + ADD YOUR PHOTO
-                  </span>
-                )}
-              </motion.button>
-
-              <div className="relative z-10 flex items-center gap-3 text-xs">
-                <button
-                  type="button"
-                  onClick={onOpenPhotoPicker}
-                  className="text-[#52e896] hover:underline font-medium cursor-pointer"
-                >
-                  {portraitDataUrl ? 'Change Photo' : 'Upload Portrait'}
-                </button>
-                {portraitDataUrl && (
-                  <button
-                    type="button"
-                    onClick={onRemovePortrait}
-                    className="text-white/60 hover:text-white cursor-pointer"
-                  >
-                    Remove
-                  </button>
-                )}
-              </div>
+                <img
+                  src={`${import.meta.env.BASE_URL}sayandeep_professional_pfp.jpg`}
+                  alt={PORTFOLIO_IDENTITY.fullName}
+                  className="w-full h-full object-cover object-[50%_28%] contrast-110 brightness-90 saturate-75 transition-transform duration-500 group-hover:scale-105"
+                />
+              </motion.div>
             </motion.div>
 
               {/* Word-by-word masked headline reveal */}

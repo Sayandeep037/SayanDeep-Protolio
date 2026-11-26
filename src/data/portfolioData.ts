@@ -66,7 +66,7 @@ export const PORTFOLIO_IDENTITY = {
   footerLeft: '© Sayan Deep Roy',
   footerRight: 'Bangalore · CS 2025',
   email: 'roysayandeep03@gmail.com',
-  phone: '+91 9163640501',
+  phone: '+91 916 364 0501',
   github: 'https://github.com/Sayandeep037',
   linkedin: 'https://www.linkedin.com/in/sayan-deep-roy-1364a2239',
   resumeUrl: `${import.meta.env.BASE_URL}assets/aistudio/Resume_5__14__b05cd521.pdf`,

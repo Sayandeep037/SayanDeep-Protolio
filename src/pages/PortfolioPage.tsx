@@ -166,6 +166,30 @@ export function PortfolioPage({ onNavigate }: PortfolioPageProps) {
           ))}
         </section>
 
+        <section aria-labelledby="portfolio-faq-title" className="border-t border-white/12 pt-7">
+          <h2 id="portfolio-faq-title" className="text-2xl font-semibold text-white mb-5">
+            Frequently asked questions
+          </h2>
+          <div className="space-y-5">
+            <article>
+              <h3 className="text-base font-semibold text-[#52e896]">What kind of developer is Sayan Deep Roy?</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[#dce8e1]">Sayan is a frontend-focused developer based in Bangalore, India, building responsive web applications with React, JavaScript, HTML, and CSS.</p>
+            </article>
+            <article>
+              <h3 className="text-base font-semibold text-[#52e896]">What technologies does Sayan work with?</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[#dce8e1]">His project work includes React, Django, Python, Java, SQL, Streamlit, Pandas, Matplotlib, and Seaborn.</p>
+            </article>
+            <article>
+              <h3 className="text-base font-semibold text-[#52e896]">What projects are featured in this portfolio?</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[#dce8e1]">Featured work includes CarbonPulse, a React and Django carbon footprint tracker; a React book review platform; and a Python expense tracker built with Streamlit.</p>
+            </article>
+            <article>
+              <h3 className="text-base font-semibold text-[#52e896]">How can I contact Sayan about a project or role?</h3>
+              <p className="mt-1 text-sm leading-relaxed text-[#dce8e1]">Use the contact form on this portfolio or email <a className="underline underline-offset-2 hover:text-[#52e896]" href={`mailto:${PORTFOLIO_IDENTITY.email}`}>{PORTFOLIO_IDENTITY.email}</a>.</p>
+            </article>
+          </div>
+        </section>
+
         {/* Bottom CTA */}
         <motion.section
           animate={{ y: [0, -5, 0] }}

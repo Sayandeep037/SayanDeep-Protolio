@@ -1,23 +1,22 @@
-import { ChangeEvent, useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import {
   BANNER_NAV_ITEMS,
   DetailSection,
   PORTFOLIO_IDENTITY,
 } from './data/portfolioData';
-import { AboutPage } from './pages/AboutPage';
-import { ContactPage } from './pages/ContactPage';
-import { PortfolioPage } from './pages/PortfolioPage';
-import { ServicesPage } from './pages/ServicesPage';
 import { GlassReflectionPage } from './components/GlassReflectionPage';
-import { GlassHeroSceneController, HeroPhase } from './three/GlassHeroScene';
+import type { GlassHeroSceneController, HeroPhase } from './three/GlassHeroScene';
 import {
   getBannerNavLayout,
   getPortraitFrameRect,
   getWrappedLineCount,
-} from './three/glassTextures';
+} from './three/glassLayout';
 
-const PORTRAIT_STORAGE_KEY = 'sdr_portfolio_portrait_v1';
 const VALID_SECTIONS: DetailSection[] = ['about', 'services', 'portfolio', 'contact'];
+const AboutPage = lazy(() => import('./pages/AboutPage').then((module) => ({ default: module.AboutPage })));
+const ContactPage = lazy(() => import('./pages/ContactPage').then((module) => ({ default: module.ContactPage })));
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage').then((module) => ({ default: module.PortfolioPage })));
+const ServicesPage = lazy(() => import('./pages/ServicesPage').then((module) => ({ default: module.ServicesPage })));
 
 function parseHashSection(): DetailSection | null {
   const hash = window.location.hash.replace(/^#/, '').toLowerCase();
@@ -31,7 +30,6 @@ export default function App() {
   const sceneRef = useRef<GlassHeroSceneController | null>(null);
   const navLayerRef = useRef<HTMLDivElement | null>(null);
   const panelLayerRef = useRef<HTMLDivElement | null>(null);
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const pageScrollRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<Record<DetailSection, HTMLElement | null>>({
     about: null,
@@ -44,8 +42,6 @@ export default function App() {
   const [activeSection, setActiveSection] = useState<DetailSection>('about');
   const [contextLost, setContextLost] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
-  const [portraitDataUrl, setPortraitDataUrl] = useState<string | null>(null);
-
   const [showDefinitions, setShowDefinitions] = useState(false);
   const [panelDims, setPanelDims] = useState({
     navW: 1280,
@@ -56,16 +52,6 @@ export default function App() {
   });
 
   useEffect(() => {
-    let savedPortrait: string | null = null;
-    try {
-      savedPortrait = window.localStorage.getItem(PORTRAIT_STORAGE_KEY);
-      if (savedPortrait) {
-        setPortraitDataUrl(savedPortrait);
-      }
-    } catch {
-      // Ignore storage access errors
-    }
-
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setReducedMotion(prefersReduced);
     if (prefersReduced) {
@@ -76,129 +62,71 @@ export default function App() {
     const mount = canvasMountRef.current;
     if (!mount) return;
 
-    const controller = new GlassHeroSceneController(mount, {
-      onPhaseChange: (nextPhase) => {
-        setPhase(nextPhase);
-      },
-      onHomographyUpdate: (navMatrix, panelMatrix, navW, navH, panelW, panelH) => {
-        if (navLayerRef.current) {
-          navLayerRef.current.style.transform = navMatrix;
-          navLayerRef.current.style.width = `${navW}px`;
-          navLayerRef.current.style.height = `${navH}px`;
-        }
-        if (panelLayerRef.current) {
-          panelLayerRef.current.style.transform = panelMatrix;
-          panelLayerRef.current.style.width = `${panelW}px`;
-          panelLayerRef.current.style.height = `${panelH}px`;
-        }
-        setPanelDims((prev) => {
-          if (
-            Math.abs(prev.panelW - panelW) < 1 &&
-            Math.abs(prev.panelH - panelH) < 1
-          ) {
-            return prev;
-          }
-          return {
-            navW,
-            navH,
-            panelW,
-            panelH,
-            S: panelW / 1730,
-          };
-        });
-      },
-      onBackSliverHoverChange: () => {},
-      onBackSliverClick: () => {
-        if (window.location.hash && window.location.hash !== '#home') {
-          window.history.replaceState(null, '', '#home');
-        }
-        setShowDefinitions(false);
-        window.setTimeout(() => {
-          sceneRef.current?.reassemble();
-        }, 60);
-      },
-      onContextLostChange: setContextLost,
-    });
-
-    sceneRef.current = controller;
-
     let cancelled = false;
-    if (savedPortrait) {
-      const img = new Image();
-      img.onload = () => {
+    let controller: GlassHeroSceneController | null = null;
+
+    void import('./three/GlassHeroScene').then(({ GlassHeroSceneController }) => {
+      if (cancelled) return;
+
+      controller = new GlassHeroSceneController(mount, {
+        onPhaseChange: (nextPhase) => {
+          setPhase(nextPhase);
+        },
+        onHomographyUpdate: (navMatrix, panelMatrix, navW, navH, panelW, panelH) => {
+          if (navLayerRef.current) {
+            navLayerRef.current.style.transform = navMatrix;
+            navLayerRef.current.style.width = `${navW}px`;
+            navLayerRef.current.style.height = `${navH}px`;
+          }
+          if (panelLayerRef.current) {
+            panelLayerRef.current.style.transform = panelMatrix;
+            panelLayerRef.current.style.width = `${panelW}px`;
+            panelLayerRef.current.style.height = `${panelH}px`;
+          }
+          setPanelDims((prev) => {
+            if (
+              Math.abs(prev.panelW - panelW) < 1 &&
+              Math.abs(prev.panelH - panelH) < 1
+            ) {
+              return prev;
+            }
+            return {
+              navW,
+              navH,
+              panelW,
+              panelH,
+              S: panelW / 1730,
+            };
+          });
+        },
+        onBackSliverHoverChange: () => {},
+        onBackSliverClick: () => {
+          if (window.location.hash && window.location.hash !== '#home') {
+            window.history.replaceState(null, '', '#home');
+          }
+          setShowDefinitions(false);
+          window.setTimeout(() => {
+            sceneRef.current?.reassemble();
+          }, 60);
+        },
+        onContextLostChange: setContextLost,
+      });
+
+      sceneRef.current = controller;
+      const portraitImage = new Image();
+      portraitImage.onload = () => {
         if (!cancelled) {
-          controller.setPortraitImage(img);
+          controller?.setPortraitImage(portraitImage);
         }
       };
-      img.src = savedPortrait;
-    }
+      portraitImage.src = `${import.meta.env.BASE_URL}sayandeep_professional_pfp.jpg`;
+    });
 
     return () => {
       cancelled = true;
-      controller.dispose();
+      controller?.dispose();
       sceneRef.current = null;
     };
-  }, []);
-
-  const handleOpenPhotoPicker = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
-  const handleFileChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    e.target.value = '';
-    if (!file || !file.type.startsWith('image/')) return;
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const rawUrl = typeof reader.result === 'string' ? reader.result : null;
-      if (!rawUrl) return;
-
-      const sourceImg = new Image();
-      sourceImg.onload = () => {
-        const maxDim = 960;
-        let targetW = sourceImg.naturalWidth;
-        let targetH = sourceImg.naturalHeight;
-        if (targetW > maxDim || targetH > maxDim) {
-          const scale = maxDim / Math.max(targetW, targetH);
-          targetW = Math.max(1, Math.round(targetW * scale));
-          targetH = Math.max(1, Math.round(targetH * scale));
-        }
-
-        const offscreen = document.createElement('canvas');
-        offscreen.width = targetW;
-        offscreen.height = targetH;
-        const ctx = offscreen.getContext('2d');
-        if (!ctx) return;
-        ctx.drawImage(sourceImg, 0, 0, targetW, targetH);
-
-        const optimizedUrl = offscreen.toDataURL('image/jpeg', 0.88);
-        try {
-          window.localStorage.setItem(PORTRAIT_STORAGE_KEY, optimizedUrl);
-        } catch {
-          // Ignore storage quota errors
-        }
-        setPortraitDataUrl(optimizedUrl);
-
-        const readyImg = new Image();
-        readyImg.onload = () => {
-          sceneRef.current?.setPortraitImage(readyImg);
-        };
-        readyImg.src = optimizedUrl;
-      };
-      sourceImg.src = rawUrl;
-    };
-    reader.readAsDataURL(file);
-  }, []);
-
-  const handleRemovePortrait = useCallback(() => {
-    try {
-      window.localStorage.removeItem(PORTRAIT_STORAGE_KEY);
-    } catch {
-      // Ignore storage errors
-    }
-    setPortraitDataUrl(null);
-    sceneRef.current?.setPortraitImage(null);
   }, []);
 
   const scrollToSection = useCallback(
@@ -380,14 +308,6 @@ export default function App() {
 
   return (
     <div className="relative w-full h-full overflow-hidden select-none">
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/*"
-        onChange={handleFileChange}
-        className="hidden"
-        aria-label="Upload portrait image"
-      />
       {/* WebGL Canvas Container */}
       <div
         ref={canvasMountRef}
@@ -451,55 +371,27 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="shrink-0 flex flex-col items-center gap-2.5">
-                <button
-                  type="button"
-                  onClick={handleOpenPhotoPicker}
-                  className={`group relative w-48 h-56 overflow-hidden transition-all cursor-pointer flex items-center justify-center ${
-                    portraitDataUrl
-                      ? 'bg-transparent'
-                      : 'rounded-2xl border border-dashed border-[#36d67e]/25 hover:border-[#36d67e]/60 bg-[#0d1f16]/60'
-                  }`}
-                >
-                  {portraitDataUrl ? (
-                    <>
-                      <img
-                        src={portraitDataUrl}
-                        alt="Sayan Deep Roy"
-                        className="w-full h-full object-cover object-[50%_28%] opacity-90 contrast-110 brightness-90 saturate-75"
-                        style={{
-                          WebkitMaskImage:
-                            'radial-gradient(ellipse 74% 78% at 50% 46%, #000 45%, transparent 98%)',
-                          maskImage:
-                            'radial-gradient(ellipse 74% 78% at 50% 46%, #000 45%, transparent 98%)',
-                        }}
-                      />
-                      <span
-                        className="pointer-events-none absolute inset-0"
-                        style={{
-                          background:
-                            'radial-gradient(ellipse 74% 78% at 50% 46%, rgba(18,64,42,0.2) 0%, rgba(11,20,16,0.75) 95%)',
-                        }}
-                      />
-                      <span className="absolute bottom-3 px-3 py-1 rounded-full bg-[#07160e]/85 border border-[#36d67e]/40 opacity-0 group-hover:opacity-100 transition-opacity text-xs font-medium text-[#36d67e]">
-                        Change Photo
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-xs font-medium tracking-wider text-white/55 group-hover:text-[#36d67e] transition-colors">
-                      + ADD YOUR PHOTO
-                    </span>
-                  )}
-                </button>
-                {portraitDataUrl && (
-                  <button
-                    type="button"
-                    onClick={handleRemovePortrait}
-                    className="text-[11px] text-white/45 hover:text-[#36d67e] cursor-pointer"
-                  >
-                    Remove Photo
-                  </button>
-                )}
+              <div className="shrink-0 flex flex-col items-center">
+                <div className="relative w-48 h-56 overflow-hidden">
+                  <img
+                    src={`${import.meta.env.BASE_URL}sayandeep_professional_pfp.jpg`}
+                    alt="Sayan Deep Roy"
+                    className="w-full h-full object-cover object-[50%_28%] opacity-90 contrast-110 brightness-90 saturate-75"
+                    style={{
+                      WebkitMaskImage:
+                        'radial-gradient(ellipse 74% 78% at 50% 46%, #000 45%, transparent 98%)',
+                      maskImage:
+                        'radial-gradient(ellipse 74% 78% at 50% 46%, #000 45%, transparent 98%)',
+                    }}
+                  />
+                  <span
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                      background:
+                        'radial-gradient(ellipse 74% 78% at 50% 46%, rgba(18,64,42,0.2) 0%, rgba(11,20,16,0.75) 95%)',
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -620,30 +512,6 @@ export default function App() {
                 {PORTFOLIO_IDENTITY.secondaryCta}
               </button>
 
-              {/* Interactive Portrait Upload / Replace Target over Shards C & E */}
-              {portraitRect.visible && (
-                <button
-                  type="button"
-                  onClick={handleOpenPhotoPicker}
-                  aria-label={portraitDataUrl ? 'Change portrait photo' : 'Add portrait photo'}
-                  className="group absolute pointer-events-auto cursor-pointer flex items-end justify-center pb-4"
-                  style={{
-                    left: portraitRect.x,
-                    top: portraitRect.y,
-                    width: portraitRect.w,
-                    height: portraitRect.h,
-                    borderRadius: portraitRect.radius,
-                  }}
-                >
-                  <span
-                    className="opacity-0 group-hover:opacity-100 transition-opacity px-3.5 py-1.5 rounded-full bg-[#07160e]/90 border border-[#36d67e]/45 text-[#36d67e] font-medium"
-                    style={{ fontSize: Math.max(10, 12 * S) }}
-                  >
-                    {portraitDataUrl ? 'Change Photo' : '+ Add Photo'}
-                  </span>
-                </button>
-              )}
-
               {/* Footer Links */}
               <div
                 className="absolute select-text pointer-events-auto text-transparent"
@@ -706,6 +574,7 @@ export default function App() {
           {/* Sequential Next-to-Next Pages (About -> Services -> Portfolio -> Contact) with Outward Glass Reflections */}
           {showDefinitions && (
             <main className="flex-1 w-full select-text space-y-20 sm:space-y-24 pb-12">
+              <Suspense fallback={<p role="status" className="mx-auto max-w-5xl py-12 text-center text-white/75">Loading portfolio content...</p>}>
               <GlassReflectionPage
                 id="about"
                 index={0}
@@ -715,9 +584,6 @@ export default function App() {
                 }}
               >
                 <AboutPage
-                  portraitDataUrl={portraitDataUrl}
-                  onOpenPhotoPicker={handleOpenPhotoPicker}
-                  onRemovePortrait={handleRemovePortrait}
                   onNavigate={navigatePage}
                 />
               </GlassReflectionPage>
@@ -754,6 +620,7 @@ export default function App() {
               >
                 <ContactPage />
               </GlassReflectionPage>
+              </Suspense>
             </main>
           )}
         </div>

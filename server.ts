@@ -162,9 +162,7 @@ async function startServer(): Promise<void> {
         return;
       }
 
-      const toEmail = stripHeaderBreaks(
-        process.env.CONTACT_TO_EMAIL || DEFAULT_RECIPIENT
-      );
+      const toEmail = DEFAULT_RECIPIENT;
       const resolvedSubject =
         cleanSubject || `Portfolio Message from ${cleanName}`;
       const htmlBody = buildEmailHtml(

@@ -23,6 +23,7 @@ import {
 import { PORTFOLIO_IDENTITY } from '../data/portfolioData';
 
 const EASE_OUT_EXPO: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const WEB3FORMS_ACCESS_KEY = '6cf1d74e-5a39-4b73-91a8-b8b4dafb5324';
 
 export function ContactPage() {
   const infoCardRef = useRef<HTMLElement | null>(null);
@@ -102,40 +103,30 @@ export function ContactPage() {
       subject.trim() || `Portfolio Message from ${name.trim() || 'Visitor'}`;
 
     try {
-      const apiResponse = await fetch('/api/contact', {
+      const formData = new FormData();
+      formData.set('access_key', WEB3FORMS_ACCESS_KEY);
+      formData.set('name', name.trim());
+      formData.set('email', senderEmail.trim());
+      formData.set('replyto', senderEmail.trim());
+      formData.set('from_name', name.trim());
+      formData.set('subject', resolvedSubject);
+      formData.set('message', message.trim());
+      formData.set('botcheck', website);
+
+      const apiResponse = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({
-          name: name.trim(),
-          email: senderEmail.trim(),
-          subject: resolvedSubject,
-          message: message.trim(),
-          website,
-        }),
+        body: formData,
+        signal: AbortSignal.timeout(10000),
       });
 
-      const isJson =
-        apiResponse.headers.get('content-type')?.includes('application/json') ??
-        false;
-      const apiData = (isJson
-        ? await apiResponse.json().catch(() => ({}))
-        : {}) as {
-        ok?: boolean;
-        needsConfig?: boolean;
-        activationSent?: boolean;
+      const apiData = (await apiResponse.json().catch(() => ({}))) as {
+        success?: boolean;
         message?: string;
-        error?: string;
       };
 
-      if (apiResponse.ok && apiData.ok) {
+      if (apiResponse.ok && apiData.success) {
         setSubmitStatus('success');
-        setStatusMessage(
-          apiData.message ||
-            `Your message was delivered directly to ${PORTFOLIO_IDENTITY.email}.`
-        );
+        setStatusMessage(`Your message was sent to ${PORTFOLIO_IDENTITY.email}.`);
         setName('');
         setSenderEmail('');
         setSubject('');
@@ -144,73 +135,10 @@ export function ContactPage() {
         return;
       }
 
-      const staticHostFallback =
-        apiResponse.status === 404 || apiResponse.status === 405 || !isJson;
-
-      // If backend isn't present (e.g. GitHub Pages) or SMTP/Resend isn't configured yet, use direct browser relay
-      if (staticHostFallback || (apiData.needsConfig && !apiData.activationSent)) {
-        try {
-          const relayResponse = await fetch(
-            `https://formsubmit.co/ajax/${encodeURIComponent(PORTFOLIO_IDENTITY.email)}`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Accept: 'application/json',
-              },
-              body: JSON.stringify({
-                name: name.trim(),
-                email: senderEmail.trim(),
-                _replyto: senderEmail.trim(),
-                _subject: resolvedSubject,
-                _template: 'table',
-                _captcha: 'false',
-                message: message.trim(),
-              }),
-              signal: AbortSignal.timeout(6000),
-            }
-          );
-
-          const relayData = (await relayResponse.json().catch(() => ({}))) as {
-            success?: boolean | string;
-            message?: string;
-          };
-
-          if (
-            relayResponse.ok &&
-            (relayData.success === true || relayData.success === 'true')
-          ) {
-            setSubmitStatus('success');
-            setStatusMessage(
-              `Your message was delivered directly to ${PORTFOLIO_IDENTITY.email}.`
-            );
-            setName('');
-            setSenderEmail('');
-            setSubject('');
-            setMessage('');
-            setWebsite('');
-            return;
-          }
-
-          if (
-            typeof relayData.message === 'string' &&
-            relayData.message.toLowerCase().includes('activat')
-          ) {
-            setSubmitStatus('error');
-            setStatusMessage(
-              `Activation email sent to ${PORTFOLIO_IDENTITY.email} — confirm once in your Gmail inbox, or add SMTP_PASS in Settings -> Secrets for instant delivery.`
-            );
-            return;
-          }
-        } catch {
-          // Fall through to server guidance
-        }
-      }
-
       setSubmitStatus('error');
       setStatusMessage(
-        apiData.error ||
-          'Could not send directly right now. You can use the email app link below.'
+        apiData.message ||
+          'Web3Forms could not send your message. Please try again or use the email link.'
       );
     } catch {
       setSubmitStatus('error');
@@ -498,7 +426,7 @@ export function ContactPage() {
           <form onSubmit={handleSubmit} className="relative z-10 space-y-4">
             <input
               type="text"
-              name="website"
+              name="botcheck"
               tabIndex={-1}
               autoComplete="off"
               aria-hidden="true"
