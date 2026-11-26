@@ -113,6 +113,9 @@ export default function App() {
       });
 
       sceneRef.current = controller;
+      if (parseHashSection()) {
+        controller.shatter();
+      }
       const portraitImage = new Image();
       portraitImage.onload = () => {
         if (!cancelled) {

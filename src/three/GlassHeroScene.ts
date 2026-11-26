@@ -648,6 +648,7 @@ export class GlassHeroSceneController {
     this.callbacks.onBackSliverHoverChange(false);
     this.renderer.domElement.style.cursor = 'default';
     this.callbacks.onPhaseChange('reassembling');
+    this.scheduleTick();
   }
 
   private bindEvents(): void {
@@ -753,6 +754,15 @@ export class GlassHeroSceneController {
       }
     };
     this.frameId = window.setTimeout(poll, 5);
+  }
+
+  private scheduleTick(): void {
+    if (this.disposed || this.phase === 'shattered') return;
+    if (this.isSoftwareGl) {
+      this.afterDraw(this.tick);
+    } else {
+      this.frameId = requestAnimationFrame(this.tick);
+    }
   }
 
   private emitHomography(): void {
@@ -1022,11 +1032,7 @@ export class GlassHeroSceneController {
 
     this.renderer.render(this.scene, this.camera);
 
-    if (this.isSoftwareGl) {
-      this.afterDraw(this.tick);
-    } else {
-      this.frameId = requestAnimationFrame(this.tick);
-    }
+    this.scheduleTick();
   };
 
   public dispose(): void {
