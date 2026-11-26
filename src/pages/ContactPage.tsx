@@ -117,7 +117,12 @@ export function ContactPage() {
         }),
       });
 
-      const apiData = (await apiResponse.json().catch(() => ({}))) as {
+      const isJson =
+        apiResponse.headers.get('content-type')?.includes('application/json') ??
+        false;
+      const apiData = (isJson
+        ? await apiResponse.json().catch(() => ({}))
+        : {}) as {
         ok?: boolean;
         needsConfig?: boolean;
         activationSent?: boolean;
@@ -139,8 +144,11 @@ export function ContactPage() {
         return;
       }
 
-      // If backend SMTP/Resend isn't configured yet and activation wasn't already triggered, try direct browser relay
-      if (apiData.needsConfig && !apiData.activationSent) {
+      const staticHostFallback =
+        apiResponse.status === 404 || apiResponse.status === 405 || !isJson;
+
+      // If backend isn't present (e.g. GitHub Pages) or SMTP/Resend isn't configured yet, use direct browser relay
+      if (staticHostFallback || (apiData.needsConfig && !apiData.activationSent)) {
         try {
           const relayResponse = await fetch(
             `https://formsubmit.co/ajax/${encodeURIComponent(PORTFOLIO_IDENTITY.email)}`,

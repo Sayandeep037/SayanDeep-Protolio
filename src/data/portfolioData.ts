@@ -69,7 +69,7 @@ export const PORTFOLIO_IDENTITY = {
   phone: '+91 9163640501',
   github: 'https://github.com/Sayandeep037',
   linkedin: 'https://www.linkedin.com/in/sayan-deep-roy-1364a2239',
-  resumeUrl: '/assets/aistudio/Resume_5__14__b05cd521.pdf',
+  resumeUrl: `${import.meta.env.BASE_URL}assets/aistudio/Resume_5__14__b05cd521.pdf`,
 };
 
 export const FIVE_PORTFOLIO_TERMS: FiveTermItem[] = [

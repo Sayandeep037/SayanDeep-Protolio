@@ -342,6 +342,7 @@ async function startServer(): Promise<void> {
     app.use(vite.middlewares);
   } else {
     const distDir = path.resolve(__dirname, 'dist');
+    app.use('/SayanDeep-Protolio', express.static(distDir));
     app.use(express.static(distDir));
     app.get('*', (_req: Request, res: Response) => {
       res.sendFile(path.join(distDir, 'index.html'));
