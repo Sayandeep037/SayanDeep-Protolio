@@ -6,7 +6,7 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(({ command }) => {
   return {
-    base: command === 'build' ? '/SayanDeep-Protolio/' : '/',
+    base: command === 'build' && process.env.VERCEL !== '1' ? '/SayanDeep-Protolio/' : '/',
     plugins: [
       react(),
       tailwindcss(),
